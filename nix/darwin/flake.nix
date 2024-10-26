@@ -1,114 +1,99 @@
 {
-  description = "Erwin's Starter Darwin system flake";
+  description = "System flake configuration file";
+
+  # Followed the instructions of Dreams of Autonomy, https://youtu.be/Z8BL8mdzWHI?si=K83jL15NjsDWIPti
+  # But renamed the inputs to more logical names (see zmre 14:30 minute mark)
+  # Only thing is that App Store Apps don't seem to work, but renamed some conventions or time passed by, and suddenly it worked...
+  # Next we will follow instruction of zmre, https://youtu.be/LE5JR4JcvMg?si=9Bigvv_AAOEBUsoT
+  # Vervolgens ben ik ook gaan kijken naar: https://blog.dbalan.in/blog/2024/03/25/boostrap-a-macos-machine-with-nix/index.html
+  # Dit betreft in mijn visie een veel duidelijkere flake
 
   inputs = {
+    # Where we get most of our Software. Giant mono repo with recipes
+    # called derivations that say how to build software.
     nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
+
+    # Controls system level software and settings including fonts
     nix-darwin.url = "github:LnL7/nix-darwin";
     nix-darwin.inputs.nixpkgs.follows = "nixpkgs";
-    nix-homebrew.url = "github:zhaofengli-wip/nix-homebrew";
+
+    # Manages configs links things into your home directory
+    home-manager.url = "github:nix-community/home-manager";
+    home-manager.inputs.nixpkgs.follows = "nixpkgs";
+
+    # Manages the homebrew package system
+    nix-homebrew = {url = "github:zhaofengli-wip/nix-homebrew";};
+
+    homebrew-core = {
+      url = "github:homebrew/homebrew-core";
+      flake = false;
+    };
+    homebrew-cask = {
+      url = "github:homebrew/homebrew-cask";
+      flake = false;
+    };
+    homebrew-bundle = {
+      url = "github:homebrew/homebrew-bundle";
+      flake = false;
+    };
+
+    # tricked out nvim from
+    pwnvim.url = "github:zmre/pwnvim";
   };
 
   outputs = inputs @ {
     self,
     nix-darwin,
     nixpkgs,
+    home-manager,
     nix-homebrew,
-  }: let
-    configuration = {
-      pkgs,
-      config,
-      ...
-    }: {
-      nixpkgs.config.allowUnfree = true;
-      # List packages installed in system profile. To search by name, run:
-      # $ nix-env -qaP | grep wget
-      environment.systemPackages = with pkgs; [
-        tmux
-        mkalias
-        alacritty
-        obsidian
-      ];
-
-      homebrew = {
-        enable = true;
-        brews = [
-          "mas"
-        ];
-        casks = [
-          "the-unarchiver"
-          "firefox"
-        ];
-        masApps = {
-          "Dashlane" = 517914548;
-        };
-        onActivation.cleanup = "zap";
-      };
-
-      fonts.packages = [
-        (pkgs.nerdfonts.override {fonts = ["JetBrainsMono"];})
-      ];
-
-      system.activationScripts.applications.text = let
-        env = pkgs.buildEnv {
-          name = "system-applications";
-          paths = config.environment.systemPackages;
-          pathsToLink = "/Applications";
-        };
-      in
-        pkgs.lib.mkForce ''
-          # Set up applications.
-          echo "setting up /Applications..." >&2
-          rm -rf /Applications/Nix\ Apps
-          mkdir -p /Applications/Nix\ Apps
-          find ${env}/Applications -maxdepth 1 -type l -exec readlink '{}' + |
-          while read src; do
-            app_name=$(basename "$src")
-            echo "copying $src" >&2
-            ${pkgs.mkalias}/bin/mkalias "$src" "/Applications/Nix Apps/$app_name"
-          done
-        '';
-
-      #Auto upgrade nix package and the daemon service.
-      services.nix-daemon.enable = true;
-      # nix.package = pkgs.nix;
-
-      # Necessary for using flakes on this system.
-      nix.settings.experimental-features = "nix-command flakes";
-
-      # Create /etc/zshrc that loads the nix-darwin environment.
-      programs.zsh.enable = true; # default shell on catalina
-      # programs.fish.enable = true;
-
-      # Set Git commit hash for darwin-version.
-      system.configurationRevision = self.rev or self.dirtyRev or null;
-
-      # Used for backwards compatibility, please read the changelog before changing.
-      # $ darwin-rebuild changelog
-      system.stateVersion = 5;
-
-      # The platform the configuration will be used on.
-      nixpkgs.hostPlatform = "aarch64-darwin";
-    };
-  in {
+    homebrew-core,
+    homebrew-cask,
+    homebrew-bundle,
+    pwnvim,
+    ...
+  }: {
     # Build darwin flake using:
-    # $ darwin-rebuild build --flake .#mbpro
-    darwinConfigurations."mbpro" = nix-darwin.lib.darwinSystem {
+    # $ darwin-rebuild build --flake .#MacBook-Pro
+    darwinConfigurations."MacBook-Pro" = nix-darwin.lib.darwinSystem {
+      system = "aarch64-darwin";
+      # Definieer pkgs door nixpkgs te importeren voor aarch64-darwin (Apple Silicon)
       modules = [
-        configuration
+        ./configuration.nix
+        home-manager.darwinModules.home-manager
+        {
+          # `home-manager` config
+          home-manager = {
+            useGlobalPkgs = true;
+            useUserPackages = true;
+            users.erwinvandeglind = import ./home.nix {
+              lib = (import nixpkgs {system = "aarch64-darwin";}).lib;
+              pkgs = import nixpkgs {system = "aarch64-darwin";};
+              inherit pwnvim;
+            };
+          };
+        }
+
         nix-homebrew.darwinModules.nix-homebrew
         {
           nix-homebrew = {
             enable = true;
-            # Apple Silicon
+            # Apple Silicon Only: Also install Homebrew under the default Intel prefix for Rosetta 2
             enableRosetta = true;
-            # User owning the Homebrew prefix
             user = "erwinvandeglind";
+
+            taps = {
+              "homebrew/homebrew-core" = homebrew-core;
+              "homebrew/homebrew-cask" = homebrew-cask;
+              "homebrew/homebrew-bundle" = homebrew-bundle;
+            };
+            mutableTaps = false;
           };
         }
       ];
     };
 
     # Expose the package set, including overlays, for convenience.
-    darwinPackages = self.darwinConfigurations."mbpro".pkgs;
+    darwinPackages = self.darwinConfigurations."MacBook-Pro".pkgs;
   };
 }
