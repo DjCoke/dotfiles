@@ -22,7 +22,8 @@
     };
   };
 
-  #Configuration of all our programs via Home Manager
+  # Configuration of all our programs via Home Manager
+  # Valuable read: https://nixos.wiki/wiki/Visual_Studio_Code
   programs = {
     # Configuration of git
     git = {
@@ -31,6 +32,8 @@
       userEmail = "erwin.vd.glind@me.com";
     };
 
+
+    #Configuration of Visual Studio Code
     vscode = {
       enable = true;
       enableUpdateCheck = false;
@@ -38,12 +41,20 @@
       mutableExtensionsDir = false;
       extensions = with pkgs.vscode-extensions; [
         yzhang.markdown-all-in-one
+        dracula-theme.theme-dracula
         ms-vscode-remote.remote-ssh
-        mhutchie.git-graph
         jnoortheen.nix-ide
-      ];
+      ] ++ pkgs.vscode-utils.extensionsFromVscodeMarketplace [
+      {
+        name = "beautiful-dracula";
+        publisher = "NguyenHoangLam";
+        version = "0.1.4";
+        sha256 = "H8O6PkpwcPFiRRp17FmM05JtZ5suIJWn+FtGf5YMquU=";
+      }
+    ];
 
-      #User Settings
+      # User Settings
+      # Stolen from https://discourse.nixos.org/t/home-manager-vscode-extension-settings-mutableextensionsdir-false/33878
       userSettings = {
         # General
         "editor.fontSize" = 16;
@@ -59,14 +70,14 @@
         "files.insertFinalNewline" = true;
         "diffEditor.ignoreTrimWhitespace" = false;
         # Git
+
+        # https://stackoverflow.com/questions/74462667/is-that-good-idea-to-disable-gpg-signin-for-code-commits
         "git.enableCommitSigning" = false;
-        "git-graph.repository.sign.commits" = true;
-        "git-graph.repository.sign.tags" = true;
-        "git-graph.repository.commits.showSignatureStatus" = true;
         # Styling
         "window.autoDetectColorScheme" = true;
-        "workbench.preferredDarkColorTheme" = "Default Dark Modern";
-        "workbench.preferredLightColorTheme" = "Default Light Modern";
+        "workbench.preferredDarkColorTheme" = "Beautiful Dracula Darker";
+        "workbench.preferredLightColorTheme" = "Beautiful Dracula Normal";
+        "workbench.colorTheme" = "Beautiful Dracula Darker";
         "workbench.iconTheme" = "material-icon-theme";
         "material-icon-theme.activeIconPack" = "none";
         "material-icon-theme.folders.theme" = "classic";

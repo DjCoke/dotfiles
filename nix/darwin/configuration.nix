@@ -95,7 +95,24 @@
   # $ darwin-rebuild changelog
   system.stateVersion = 5;
 
+  # Used for building Linux Machines
+  # https://nixcademy.com/posts/macos-linux-builder/
   nix.configureBuildUsers = true;
+  nix.linux-builder = {
+    enable = true;
+    ephemeral = true;
+    maxJobs = 4;
+    config = {
+      virtualisation = {
+        darwin-builder = {
+          diskSize = 40 * 1024;
+          memorySize = 8 * 1024;
+        };
+        cores = 6;
+      };
+    };
+  };
+  nix.settings.trusted-users = [ "@admin" ];
 
   # The platform the configuration will be used on.
   nixpkgs.hostPlatform = "aarch64-darwin";
