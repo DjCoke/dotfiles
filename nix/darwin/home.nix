@@ -59,7 +59,7 @@
         "files.insertFinalNewline" = true;
         "diffEditor.ignoreTrimWhitespace" = false;
         # Git
-        "git.enableCommitSigning" = true;
+        "git.enableCommitSigning" = false;
         "git-graph.repository.sign.commits" = true;
         "git-graph.repository.sign.tags" = true;
         "git-graph.repository.commits.showSignatureStatus" = true;
