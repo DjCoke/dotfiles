@@ -15,24 +15,24 @@
 #
 # Moreover please update the packages option in your user configuration and add the home-manager options:
 
- users.users = {
-   erwin = {
-     isNormalUser = true;
-     initialPassword = "12345";
-     extraGroups = [ "wheel" ]; # Enable ‘sudo’ for the user.
-     packages = [ inputs.home-manager.packages.${pkgs.system}.default ];
-   };
- };
-#
- home-manager = {
-   useUserPackages = true;
-   extraSpecialArgs = { inherit inputs outputs; };
-   users.erwin =
-     import ../../home/erwin/${config.networking.hostName}.nix;
- };
+#  users.users = {
+#    erwin = {
+#      isNormalUser = true;
+#      initialPassword = "12345";
+#      extraGroups = [ "wheel" ]; # Enable ‘sudo’ for the user.
+#      packages = [ inputs.home-manager.packages.${pkgs.system}.default ];
+#    };
+#  };
+# #
+#  home-manager = {
+#    useUserPackages = true;
+#    extraSpecialArgs = { inherit inputs outputs; };
+#    users.erwin =
+#      import ../../home/erwin/${config.networking.hostName}.nix;
+#  };
 #
 # Please also change your hostname accordingly:
-#:w
+#
 
 # networking.hostName = "nixos"; # Define your hostname.
 
