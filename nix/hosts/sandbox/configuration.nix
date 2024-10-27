@@ -52,11 +52,12 @@
   };
 
   programs.fish = {
-  enable = true;
-  interactiveShellInit = ''
-    ${pkgs.neofetch}/bin/neofetch
-  '';
+   enable = true;
   };
+  # interactiveShellInit = ''
+  #   ${pkgs.neofetch}/bin/neofetch
+  # '';
+  # };
 
   programs.nix-ld.enable = true;
 
