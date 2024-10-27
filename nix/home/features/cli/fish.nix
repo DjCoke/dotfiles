@@ -1,4 +1,4 @@
-{ config, lib, ... }:
+{ config, pkgs, lib, ... }:
 with lib; let
   cfg = config.features.cli.fish;
   in {
