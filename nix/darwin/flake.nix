@@ -41,7 +41,7 @@
     pwnvim.url = "github:zmre/pwnvim";
   };
 
-  outputs = inputs @ {
+  outputs = {
     self,
     nix-darwin,
     nixpkgs,
@@ -52,7 +52,7 @@
     homebrew-bundle,
     pwnvim,
     ...
-  }: {
+  } @ inputs: {
     # Build darwin flake using:
     # $ darwin-rebuild build --flake .#MacBook-Pro
     darwinConfigurations."MacBook-Pro" = nix-darwin.lib.darwinSystem {
@@ -66,9 +66,12 @@
           home-manager = {
             useGlobalPkgs = true;
             useUserPackages = true;
-            users.erwinvandeglind = import ./home.nix {
+            users.erwin = import ./home.nix {
               lib = (import nixpkgs {system = "aarch64-darwin";}).lib;
-              pkgs = import nixpkgs {system = "aarch64-darwin";};
+              pkgs = import nixpkgs {
+                system = "aarch64-darwin";
+                config.allowUnfree = true;
+              };
               inherit pwnvim;
             };
           };
@@ -80,7 +83,7 @@
             enable = true;
             # Apple Silicon Only: Also install Homebrew under the default Intel prefix for Rosetta 2
             enableRosetta = true;
-            user = "erwinvandeglind";
+            user = "erwin";
 
             taps = {
               "homebrew/homebrew-core" = homebrew-core;

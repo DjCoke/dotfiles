@@ -26,10 +26,24 @@
       "mas"
     ];
     casks = [
+      # Browsers
       "firefox"
+      "google-chrome"
+
       "the-unarchiver"
       "raycast"
       "amethyst"
+      "discord"
+      "loom"
+      "notion"
+      "slack"
+      "telegram"
+      "zoom"
+      "syncthing"
+
+      # Entertainment Tools
+      "steam"
+      "vlc"
     ];
     masApps = {
       "Dashlane" = 517914548;
@@ -42,14 +56,26 @@
   };
 
   nixpkgs.config.allowUnfree = true;
+  nixpkgs.config.allowUnfreePredicate = _: true;
 
   # Installing my favorite fonts system-wide
   fonts.packages = [(pkgs.nerdfonts.override {fonts = ["JetBrainsMono" "Meslo"];})];
 
-  users.users.erwinvandeglind.home = "/Users/erwinvandeglind";
+  users.users.erwin.home = "/Users/erwin";
   # Auto upgrade nix package and the daemon service.
   services.nix-daemon.enable = true;
   # nix.package = pkgs.nix;
+
+  nix.gc = {
+    user = "root";
+    automatic = true;
+    interval = {
+      Weekday = 0;
+      Hour = 2;
+      Minute = 0;
+    };
+    options = "--delete-older-than 30d";
+  };
 
   # Necessary for using flakes on this system.
   nix.settings.experimental-features = "nix-command flakes";
