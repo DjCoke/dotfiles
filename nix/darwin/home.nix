@@ -84,6 +84,7 @@
         # Other
         "telemetry.telemetryLevel" = "off";
         "update.showReleaseNotes" = false;
+        "git.autofetch" = true;
       };
     };
 
