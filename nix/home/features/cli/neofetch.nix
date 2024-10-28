@@ -8,4 +8,4 @@ with lib; let
         home.packages = with pkgs; [neofetch];
 
         };
-      };
+  }
