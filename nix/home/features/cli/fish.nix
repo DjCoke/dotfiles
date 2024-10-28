@@ -12,9 +12,9 @@ with lib; let
           set -x NIX_LOG info
 
           '';
-          interactiveShellInit = ''
-          ${pkgs.neofetch}/bin/neofetch
-          '';
+          # interactiveShellInit = ''
+          # ${pkgs.neofetch}/bin/neofetch
+          # '';
           shellAbbrs = {
             ".." = "cd ..";
             "..." = "cd ../..";
