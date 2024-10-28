@@ -47,6 +47,7 @@
     ];
     masApps = {
       "Dashlane" = 517914548;
+      "Pages" = 409201541;
     };
     onActivation = {
       cleanup = "zap";
