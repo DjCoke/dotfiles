@@ -1,3 +1,0 @@
-{
-	imports = [ ./erwin.nix ];
-}
