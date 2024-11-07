@@ -49,7 +49,6 @@ return {
         "dockerfile-language-server",
         "hadolint",
         "helm-lint",
-        "terraform-ls",
       },
     })
   end,
