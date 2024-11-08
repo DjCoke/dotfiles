@@ -46,7 +46,7 @@ return {
         "kube-linter",
         "kubeval",
         "yamllint",
-        "dockerfile-language-server",
+        "dockerfile-language-server"
       },
     })
   end,
