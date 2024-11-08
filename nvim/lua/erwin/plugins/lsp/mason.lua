@@ -47,7 +47,6 @@ return {
         "kubeval",
         "yamllint",
         "dockerfile-language-server",
-        "hadolint",
       },
     })
   end,
