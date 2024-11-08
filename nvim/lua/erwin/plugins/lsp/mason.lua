@@ -48,7 +48,6 @@ return {
         "yamllint",
         "dockerfile-language-server",
         "hadolint",
-        "helm-lint",
       },
     })
   end,
