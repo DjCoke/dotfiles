@@ -1,0 +1,7 @@
+# SOPS/AGE Private keys
+export SOPS_AGE_KEY_FILE="$HOME/.config/sops/age/keys.txt"
+
+# macOS default PATH + Homebrew
+export PATH="/usr/local/bin:/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin"
+
+eval "$(/opt/homebrew/bin/brew shellenv zsh)"
