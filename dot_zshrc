@@ -1,5 +1,4 @@
 # Interactive shell extras
-# test
 # Homebrew shellenv (if installed)
 if [ -x /opt/homebrew/bin/brew ]; then
   eval "$(/opt/homebrew/bin/brew shellenv)"
