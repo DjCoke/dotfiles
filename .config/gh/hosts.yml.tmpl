@@ -1,0 +1,4 @@
+# chezmoi:permissions 0600
+github.com:
+  user: DjCoke
+  oauth_token: {{ (sopsDecrypt "secrets/github.yaml").token }}
