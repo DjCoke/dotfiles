@@ -75,3 +75,6 @@ luac.out
 
 lazy-lock.json
 package-lock.json
+.ssh/id_*
+.ssh/*_key
+.ssh/k3s
