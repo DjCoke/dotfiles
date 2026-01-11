@@ -44,3 +44,6 @@ bindkey '^[[B' history-search-forward
 
 alias ls="eza --icons=always"
 
+
+# ---- Zoxide (better cd) ----
+eval "$(zoxide init zsh)"
