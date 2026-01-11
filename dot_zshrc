@@ -1,22 +1,39 @@
-# Enable Powerlevel10k instant prompt (must stay near the top)
+# ============================================================
+# Powerlevel10k instant prompt (MUST be first)
+# ============================================================
 if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
   source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
 fi
 
-# Optional: Homebrew environment (safe, conditional)
-if [ -x /opt/homebrew/bin/brew ]; then
+
+# ============================================================
+# Homebrew environment (optional, safe)
+# ============================================================
+if [[ -x /opt/homebrew/bin/brew ]]; then
   eval "$(/opt/homebrew/bin/brew shellenv)"
 fi
 
+
+# ============================================================
+# Completion system
+# ============================================================
+autoload -Uz compinit
+compinit
+
+
+# ============================================================
 # Powerlevel10k (chezmoi-managed)
+# ============================================================
 if [[ -r ~/.local/share/powerlevel10k/powerlevel10k.zsh-theme ]]; then
   source ~/.local/share/powerlevel10k/powerlevel10k.zsh-theme
 fi
 
-# Load p10k config
 [[ -r ~/.p10k.zsh ]] && source ~/.p10k.zsh
 
-# fzf zsh integration (shell only, binary via brew)
+
+# ============================================================
+# fzf (binary via brew, shell via git/chezmoi)
+# ============================================================
 if [[ -r ~/.local/share/fzf/shell/key-bindings.zsh ]]; then
   source ~/.local/share/fzf/shell/key-bindings.zsh
 fi
@@ -25,61 +42,78 @@ if [[ -r ~/.local/share/fzf/shell/completion.zsh ]]; then
   source ~/.local/share/fzf/shell/completion.zsh
 fi
 
-# Autosuggestions (early, after completion setup)
+
+# ============================================================
+# zsh-autosuggestions
+# ============================================================
 if [[ -r ~/.local/share/zsh-autosuggestions/zsh-autosuggestions.zsh ]]; then
   source ~/.local/share/zsh-autosuggestions/zsh-autosuggestions.zsh
 fi
 
-# ~~~~~~~~~~~~~~~ History setup ~~~~~~~~~~~~~~~~~~~~~~~~
 
-# history setup
-HISTFILE=$HOME/.zhistory
-SAVEHIST=1000
+# ============================================================
+# History configuration
+# ============================================================
+HISTFILE="$HOME/.zhistory"
 HISTSIZE=999
+SAVEHIST=1000
+
 setopt share_history
 setopt hist_expire_dups_first
 setopt hist_ignore_dups
 setopt hist_verify
 
 
-# completion using arrow keys (based on history)
+# ============================================================
+# Keybindings
+# ============================================================
+# History search with arrow keys
 bindkey '^[[A' history-search-backward
 bindkey '^[[B' history-search-forward
 
-# enable zsh vi-mode
+# Vi mode
 bindkey -v
-export KEYTIMEOUT=1 # make switching between modes faster
-
-# ~~~~~~~~~~~~~~~ Environment Variables ~~~~~~~~~~~~~~~~~~~~~~~~
+export KEYTIMEOUT=1
 
 
-if command -v nvim > /dev/null ; then
+# ============================================================
+# Environment variables
+# ============================================================
+export LANG="en_US.UTF-8"
+
+if command -v nvim >/dev/null; then
   export EDITOR="nvim"
   export VISUAL="nvim"
 fi
 
-export LANG="en_US.UTF-8"
 
-# ~~~~~~~~~~~~~~~ Aliases ~~~~~~~~~~~~~~~~~~~~~~~~
-alias v=nvim
+# ============================================================
+# Aliases
+# ============================================================
+alias v="nvim"
 alias gp="git pull"
-alias lg=lazygit
+alias lg="lazygit"
 
-if command -v bat > /dev/null ; then
+if command -v bat >/dev/null; then
   alias cat="bat"
 fi
 
-# ---- Eza (better ls) -----
-if command -v eza > /dev/null ; then
+if command -v eza >/dev/null; then
   alias ls="eza --icons=always"
 fi
 
-# ---- Zoxide (better cd) ----
-if command -v zoxide > /dev/null ; then
+
+# ============================================================
+# Zoxide (better cd)
+# ============================================================
+if command -v zoxide >/dev/null; then
   eval "$(zoxide init zsh)"
 fi
 
-# Syntax highlighting (ALWAYS LAST)
-if [[ -r ~/.local/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh ]]; then
-  source ~/.local/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
-fi
+
+# ============================================================
+# zsh-syntax-highlighting (ALWAYS LAST)
+# ============================================================
+[[ -r ~/.local/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh ]] \
+  && source ~/.local/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+
