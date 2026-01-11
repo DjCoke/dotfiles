@@ -39,3 +39,8 @@ setopt hist_verify
 # completion using arrow keys (based on history)
 bindkey '^[[A' history-search-backward
 bindkey '^[[B' history-search-forward
+
+# ---- Eza (better ls) -----
+
+alias ls="eza --icons=always"
+
