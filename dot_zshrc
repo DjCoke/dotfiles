@@ -30,10 +30,7 @@ if [[ -r ~/.local/share/zsh-autosuggestions/zsh-autosuggestions.zsh ]]; then
   source ~/.local/share/zsh-autosuggestions/zsh-autosuggestions.zsh
 fi
 
-# Syntax highlighting (ALWAYS LAST)
-if [[ -r ~/.local/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh ]]; then
-  source ~/.local/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
-fi
+# ~~~~~~~~~~~~~~~ History setup ~~~~~~~~~~~~~~~~~~~~~~~~
 
 # history setup
 HISTFILE=$HOME/.zhistory
@@ -49,10 +46,42 @@ setopt hist_verify
 bindkey '^[[A' history-search-backward
 bindkey '^[[B' history-search-forward
 
+# enable zsh vi-mode
+bindkey -v
+export KEYTIMEOUT=1 # make switching between modes faster
+
+# ~~~~~~~~~~~~~~~ Environment Variables ~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+if command -v nvim > /dev/null ; then
+  export EDITOR="nvim"
+  export VISUAL="nvim"
+fi
+
+export LANG="en_US.UTF-8"
+
+# ~~~~~~~~~~~~~~~ Aliases ~~~~~~~~~~~~~~~~~~~~~~~~
+alias v=nvim
+alias gp="git pull"
+alias lg=lazygit
+
+if command -v bat > /dev/null ; then
+  alias cat="bat"
+fi
+
 # ---- Eza (better ls) -----
-
-alias ls="eza --icons=always"
-
+if command -v eza > /dev/null ; then
+  alias ls="eza --icons=always"
+fi
 
 # ---- Zoxide (better cd) ----
-eval "$(zoxide init zsh)"
+if command -v zoxide > /dev/null ; then
+  eval "$(zoxide init zsh)"
+fi
+
+# Syntax highlighting (ALWAYS LAST)
+if [[ -r ~/.local/share/zsh-syntax-highlighting/zsh-syntax-high
+lighting.zsh ]]; then
+  source ~/.local/share/zsh-syntax-highlighting/zsh-syntax-high
+lighting.zsh
+fi
