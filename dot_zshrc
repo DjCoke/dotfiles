@@ -16,3 +16,13 @@ fi
 # Load p10k config
 [[ -r ~/.p10k.zsh ]] && source ~/.p10k.zsh
 
+# Autosuggestions (early, after completion setup)
+if [[ -r ~/.local/share/zsh-autosuggestions/zsh-autosuggestions.zsh ]]; then
+  source ~/.local/share/zsh-autosuggestions/zsh-autosuggestions.zsh
+fi
+
+# Syntax highlighting (ALWAYS LAST)
+if [[ -r ~/.local/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh ]]; then
+  source ~/.local/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+fi
+
