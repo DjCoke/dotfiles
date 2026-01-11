@@ -107,7 +107,9 @@ fi
 # Zoxide (better cd)
 # ============================================================
 eval "$(zoxide init zsh)"
-
+if command -v zoxide >/dev/null; then
+  alias cd="z"
+fi
 
 # ============================================================
 # zsh-syntax-highlighting (ALWAYS LAST)
