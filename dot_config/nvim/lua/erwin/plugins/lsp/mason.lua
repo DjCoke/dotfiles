@@ -4,18 +4,17 @@ return {
     opts = {
       -- list of servers for mason to install
       ensure_installed = {
-      -- core
         "ts_ls",
         "lua_ls",
         "yamlls",
         "bashls",
         "jsonls",
 
-      -- infra
+        -- infra
         "dockerls",
         "docker_compose_language_service",
 
-      -- templates /  tooling
+        -- templates /  tooling
         "gopls",
       },
     },
