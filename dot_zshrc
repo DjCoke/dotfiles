@@ -79,7 +79,7 @@ export PATH="$PATH:$HOME/.spicetify"
 # Aliases
 # ============================================================
 alias reload-zsh="source ~/.zshrc"
-alias edit-zsh="chezmoid edit ~/.zshrc"
+alias edit-zsh="chezmoi edit ~/.zshrc"
 
 alias v="nvim"
 alias gp="git pull"
