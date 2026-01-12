@@ -75,6 +75,10 @@ bindkey '^[[B' history-search-forward
 # bindkey -v
 # export KEYTIMEOUT=1
 
+# fzf-git bindings
+if [ -f "$HOME/.config/fzf-git/fzf-git.sh" ]; then
+  source "$HOME/.config/fzf-git/fzf-git.sh"
+fi
 
 # ============================================================
 # Environment variables

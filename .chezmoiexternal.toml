@@ -18,3 +18,7 @@ type = "git-repo"
 url = "https://github.com/junegunn/fzf.git"
 refreshPeriod = "168h"
 
+[".config/fzf-git"]
+    type = "git-repo"
+    url = "https://github.com/junegunn/fzf-git.sh.git"
+    refreshPeriod = "168h"
