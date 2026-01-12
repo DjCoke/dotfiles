@@ -1,3 +1,4 @@
+
 # ============================================================
 # Powerlevel10k instant prompt (MUST be first)
 # ============================================================
@@ -7,7 +8,7 @@ fi
 
 
 # ============================================================
-# Homebrew environment (optional, safe)
+# Homebrew environment
 # ============================================================
 if [[ -x /opt/homebrew/bin/brew ]]; then
   eval "$(/opt/homebrew/bin/brew shellenv)"
@@ -22,33 +23,15 @@ compinit
 
 
 # ============================================================
-# Powerlevel10k (chezmoi-managed)
+# Powerlevel10k
 # ============================================================
 if [[ -r ~/.local/share/powerlevel10k/powerlevel10k.zsh-theme ]]; then
   source ~/.local/share/powerlevel10k/powerlevel10k.zsh-theme
+elif [[ -r /opt/homebrew/share/powerlevel10k/powerlevel10k.zsh-theme ]]; then
+  source /opt/homebrew/share/powerlevel10k/powerlevel10k.zsh-theme
 fi
 
 [[ -r ~/.p10k.zsh ]] && source ~/.p10k.zsh
-
-
-# ============================================================
-# fzf (binary via brew, shell via git/chezmoi)
-# ============================================================
-if [[ -r ~/.local/share/fzf/shell/key-bindings.zsh ]]; then
-  source ~/.local/share/fzf/shell/key-bindings.zsh
-fi
-
-if [[ -r ~/.local/share/fzf/shell/completion.zsh ]]; then
-  source ~/.local/share/fzf/shell/completion.zsh
-fi
-
-
-# ============================================================
-# zsh-autosuggestions
-# ============================================================
-if [[ -r ~/.local/share/zsh-autosuggestions/zsh-autosuggestions.zsh ]]; then
-  source ~/.local/share/zsh-autosuggestions/zsh-autosuggestions.zsh
-fi
 
 
 # ============================================================
@@ -67,17 +50,12 @@ setopt hist_verify
 # ============================================================
 # Keybindings
 # ============================================================
-# History search with arrow keys
 bindkey '^[[A' history-search-backward
 bindkey '^[[B' history-search-forward
 
-# Vi mode
-# bindkey -v
-# export KEYTIMEOUT=1
-
 
 # ============================================================
-# Environment variables
+# Environment
 # ============================================================
 export LANG="en_US.UTF-8"
 
@@ -86,43 +64,156 @@ if command -v nvim >/dev/null; then
   export VISUAL="nvim"
 fi
 
+export BAT_THEME=tokyonight_night
+
+
+# ============================================================
+# PATH additions
+# ============================================================
+export PATH="$HOME/.rbenv/shims:$PATH"
+export PATH="/opt/homebrew/opt/libpq/bin:$PATH"
+export PATH="$PATH:$HOME/.spicetify"
+
 
 # ============================================================
 # Aliases
 # ============================================================
+alias reload-zsh="source ~/.zshrc"
+alias edit-zsh="nvim ~/.zshrc"
+
 alias v="nvim"
 alias gp="git pull"
 alias lg="lazygit"
-
-if command -v bat >/dev/null; then
-  alias cat="bat"
-fi
+alias python="python3"
 
 if command -v eza >/dev/null; then
   alias ls="eza --icons=always"
 fi
 
+if command -v bat >/dev/null; then
+  alias cat="bat"
+fi
+
 
 # ============================================================
-# Zoxide (better cd)
+# fzf core
 # ============================================================
-eval "$(zoxide init zsh)"
+if command -v fzf >/dev/null; then
+  eval "$(fzf --zsh)"
+fi
+
+# fzf theme
+fg="#CBE0F0"
+bg="#011628"
+bg_highlight="#143652"
+purple="#B388FF"
+blue="#06BCE4"
+cyan="#2CF9ED"
+
+export FZF_DEFAULT_OPTS="--color=fg:${fg},bg:${bg},hl:${purple},fg+:${fg},bg+:${bg_highlight},hl+:${purple},info:${blue},prompt:${cyan},pointer:${cyan},marker:${cyan},spinner:${cyan},header:${cyan}"
+
+# fd integration
+if command -v fd >/dev/null; then
+  export FZF_DEFAULT_COMMAND="fd --hidden --strip-cwd-prefix --exclude .git"
+  export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
+  export FZF_ALT_C_COMMAND="fd --type=d --hidden --strip-cwd-prefix --exclude .git"
+fi
+
+
+# ============================================================
+# fzf previews & advanced completion
+# ============================================================
+show_file_or_dir_preview='
+if [ -d {} ]; then
+  eza --tree --color=always {} | head -200
+else
+  bat -n --color=always --line-range :500 {}
+fi
+'
+
+export FZF_CTRL_T_OPTS="--preview '$show_file_or_dir_preview'"
+export FZF_ALT_C_OPTS="--preview 'eza --tree --color=always {} | head -200'"
+
+_fzf_compgen_path() {
+  fd --hidden --exclude .git . "$1"
+}
+
+_fzf_compgen_dir() {
+  fd --type=d --hidden --exclude .git . "$1"
+}
+
+_fzf_comprun() {
+  local command=$1
+  shift
+
+  case "$command" in
+    cd)           fzf --preview 'eza --tree --color=always {} | head -200' "$@" ;;
+    export|unset) fzf --preview "eval 'echo \${}'" "$@" ;;
+    ssh)          fzf --preview 'dig {}' "$@" ;;
+    *)            fzf --preview "$show_file_or_dir_preview" "$@" ;;
+  esac
+}
+
+
+# ============================================================
+# fzf-git
+# ============================================================
+if [[ -r "$HOME/.config/fzf-git/fzf-git.sh" ]]; then
+  source "$HOME/.config/fzf-git/fzf-git.sh"
+elif [[ -r "$HOME/fzf-git.sh/fzf-git.sh" ]]; then
+  source "$HOME/fzf-git.sh/fzf-git.sh"
+fi
+
+
+# ============================================================
+# zoxide (better cd)
+# ============================================================
 if command -v zoxide >/dev/null; then
+  eval "$(zoxide init zsh)"
   alias cd="z"
 fi
 
-# ============================================================
-# thefuck (autocorrect)
-# ============================================================
-eval $(thefuck --alias)
 
-# fzf-git bindings
-if [ -f "$HOME/.config/fzf-git/fzf-git.sh" ]; then
-  source "$HOME/.config/fzf-git/fzf-git.sh"
+# ============================================================
+# thefuck
+# ============================================================
+if command -v thefuck >/dev/null; then
+  eval "$(thefuck --alias)"
+  eval "$(thefuck --alias fk)"
 fi
 
+
 # ============================================================
-# zsh-syntax-highlighting (ALWAYS LAST)
+# Yazi
+# ============================================================
+function y() {
+  local tmp="$(mktemp -t yazi-cwd.XXXXXX)" cwd
+  yazi "$@" --cwd-file="$tmp"
+  if cwd="$(cat -- "$tmp")" && [[ -n "$cwd" && "$cwd" != "$PWD" ]]; then
+    builtin cd -- "$cwd"
+  fi
+  rm -f -- "$tmp"
+}
+
+
+# ============================================================
+# Node / NVM
+# ============================================================
+export NVM_DIR="$HOME/.nvm"
+[[ -s "$NVM_DIR/nvm.sh" ]] && source "$NVM_DIR/nvm.sh"
+[[ -s "$NVM_DIR/bash_completion" ]] && source "$NVM_DIR/bash_completion"
+
+
+# ============================================================
+# zsh-autosuggestions
+# ============================================================
+if [[ -r ~/.local/share/zsh-autosuggestions/zsh-autosuggestions.zsh ]]; then
+  source ~/.local/share/zsh-autosuggestions/zsh-autosuggestions.zsh
+fi
+
+
+# ============================================================
+# zsh-syntax-highlighting (MUST BE LAST)
 # ============================================================
 [[ -r ~/.local/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh ]] \
   && source ~/.local/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
