@@ -1,0 +1,10 @@
+eamodio.gitlens
+hashicorp.terraform
+ms-kubernetes-tools.vscode-kubernetes-tools
+ms-python.debugpy
+ms-python.python
+ms-python.vscode-pylance
+ms-python.vscode-python-envs
+redhat.ansible
+redhat.vscode-yaml
+yzhang.markdown-all-in-one
