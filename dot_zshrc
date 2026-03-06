@@ -218,3 +218,6 @@ fi
 [[ -r ~/.local/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh ]] \
   && source ~/.local/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 
+
+# Created by `pipx` on 2026-02-26 22:27:42
+export PATH="$PATH:/Users/erwin/.local/bin"
